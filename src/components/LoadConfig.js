@@ -1,37 +1,37 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import RowInput from './RowInput';
+import UnitInput, { Units } from './UnitInput';
 
 class LoadConfig extends React.PureComponent {
   render() {
     return <Form>
-      <RowInput
+      <UnitInput
         label='Load Mass'
         type='number'
         min={0}
         value={this.props.load.mass}
-        onChange={ e => { this.props.update({ mass: parseFloat(e.target.value) }) } }
-        unit='kg'
+        onChange={ v => { this.props.update({ mass: v }) } }
+        unit={Units.kg}
       />
-      <RowInput
+      <UnitInput
         className='mt-2'
         label='Load Angle (from horizon)'
         type='number'
         min={0} max={360} step={1}
         value={ this.props.load.angle }
-        onChange={ e => this.props.update({ angle: parseFloat(e.target.value) }) }
-        unit='deg'
+        onChange={ v => this.props.update({ angle: v }) }
+        unit={Units.deg}
         tooltip='Load angle from the horizon, to calculate effective weight of the load.
         For example, a drivebase will have 0 load angle (horizontal), while an elevator will be 90 (vertical).'
       />
-      <RowInput
+      <UnitInput
         className='mt-2'
         label='Wheel / Pulley Diameter'
         type='number'
         min={0}
-        value={this.props.load.radius * 2}
-        onChange={ e => this.props.update({ radius: parseFloat(e.target.value) / 2 }) }
-        unit='mm'
+        value={this.props.load.radius.with(r => r * 2)}
+        onChange={ v => this.props.update({ radius: v.with(d => d / 2) }) }
+        unit={Units.mm}
         tooltip='Diameter of the wheel, pulley, or moment arm that converts angular motion to linear motion (e.g. drivetrain wheels, elevator pulley).'
       />
     </Form>

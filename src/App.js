@@ -4,6 +4,7 @@ import ConfigPanel from './components/ConfigPanel';
 import './app.scss';
 import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
+import * as Units from './framework/Units';
 
 class App extends React.Component {
   constructor(props) {
@@ -12,8 +13,8 @@ class App extends React.Component {
       config_counter: 1,
       configs: {},
       sim_config: {
-        time: 5,
-        dt: 0.1
+        time: Units.s.make(5),
+        dt: Units.ms.make(10)
       }
     };
     this.addConfig = this.addConfig.bind(this);
@@ -38,14 +39,14 @@ class App extends React.Component {
           name: name || ("Cfg #" + this.state.config_counter),
           motor: {
             key: "CIM",
-            voltage: 12.0,
+            voltage: Units.V.make(12.0),
             num: 4,
             reduction: 10.75
           },
           load: {
-            mass: 70,
-            angle: 0,
-            radius: 76.2 // mm
+            mass: Units.kg.make(70),
+            angle: Units.deg.make(0),
+            radius: Units.inch.make(6 / 2) // mm
           }
         }
       },
