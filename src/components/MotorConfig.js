@@ -2,8 +2,9 @@ import React from 'react';
 import { Motors, motorFromConfig } from '../framework/Motor';
 import { ButtonGroup, Button, Form, Col } from 'react-bootstrap';
 import { MathComponent } from 'mathjax-react';
+import RowInput from './RowInput';
 
-class MotorSelection extends React.Component {
+class MotorConfig extends React.Component {
   constructor(props) {
     super(props)
     this.getMotor = this.getMotor.bind(this);
@@ -35,46 +36,37 @@ class MotorSelection extends React.Component {
         </Col>
       </Form.Row>
       <hr />
-      <Form.Row className="mb-2">
-        <Form.Label column="sm" md="5">
-          Applied Voltage:
-        </Form.Label>
-        <Col md="5">
-          <Form.Control
-            type="number" size="sm"
-            value={ this.props.motor.voltage }
-            step={0.1}
-            min={1}
-            max={14}
-            onChange={ e => { this.props.update({ voltage: parseFloat(e.target.value) }) } } />
-        </Col>
-      </Form.Row>
-      <Form.Row className="mb-2">
-        <Form.Label column="sm" md="5">
-          Number of Motors:
-        </Form.Label>
-        <Col md="5">
-          <Form.Control
-            type="number" size="sm"
-            value={ this.props.motor.num }
-            step={1}
-            min={1}
-            onChange={ e => { this.props.update({ num: parseInt(e.target.value) }) } } />
-        </Col>
-      </Form.Row>
-      <Form.Row className="mb-2">
-        <Form.Label column="sm" md="5">
-          Gearbox Reduction:
-        </Form.Label>
-        <Col md="5">
-          <Form.Control
-            type="number" size="sm"
-            value={ this.props.motor.reduction }
-            min={0}
-            step={0.1}
-            onChange={ e => { this.props.update({ reduction: parseFloat(e.target.value) }) } } />
-        </Col>
-      </Form.Row>
+
+      <RowInput
+        label="Applied Voltage"
+        className="mb-2"
+        type="number"
+        value={ this.props.motor.voltage }
+        onChange={ e => { this.props.update({ voltage: parseFloat(e.target.value) }) } }
+        min={0}
+        max={14}
+        step={0.1}
+        unit='V'
+        tooltip='Desired applied voltage to the motor during the simulation.' />
+
+      <RowInput
+        label="Number of Motors"
+        className="mb-2"
+        type="number"
+        value={ this.props.motor.num }
+        onChange={ e => { this.props.update({ num: parseInt(e.target.value) }) } }
+        min={1}
+        step={1} />
+
+      <RowInput
+        label="Gearbox Reduction"
+        className="mb-2"
+        type="number"
+        value={ this.props.motor.reduction }
+        onChange={ e => { this.props.update({ reduction: parseFloat(e.target.value) }) } }
+        min={0}
+        step={0.1} />
+      
       <hr />
       <div className="text-dark small">
         <center><i> Equivalent Motor Coefficients </i></center>
@@ -94,4 +86,4 @@ class MotorSelection extends React.Component {
   }
 }
 
-export default MotorSelection;
+export default MotorConfig;

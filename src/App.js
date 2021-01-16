@@ -36,6 +36,10 @@ class App extends React.Component {
             voltage: 12.0,
             num: 4,
             reduction: 10.75
+          },
+          load: {
+            mass: 70,
+            angle: 0
           }
         }
       },

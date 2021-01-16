@@ -1,8 +1,10 @@
 import React from 'react';
 import { Form, Col, Button } from 'react-bootstrap';
 import SimpleAccordion from './SimpleAccordion';
-import MotorSelection from './MotorSelection';
+import MotorConfig from './MotorConfig';
 import { Motors } from '../framework/Motor';
+import FAIcon from './FontAwesome';
+import LoadConfig from './LoadConfig';
 
 class Configuration extends React.Component {
   constructor(props) {
@@ -35,21 +37,28 @@ class Configuration extends React.Component {
           <Button 
             variant="primary" size="sm"
             onClick={ this.props.duplicate } > 
-            Duplicate Configuration
+            <FAIcon icon_style='regular' icon='copy' /> Duplicate Configuration
           </Button>
-        </Col>
-        <Col>
+          &nbsp;
           <Button 
             variant="danger" size="sm"
-            onClick={ this.props.delete }> Delete Configuration </Button>
+            onClick={ this.props.delete }> 
+            <FAIcon icon_style='regular' icon='trash-alt' /> Delete Configuration </Button>
         </Col>
       </Form.Row>
+
+      <SimpleAccordion title="Load">
+        <LoadConfig
+          load={ this.props.cfg.load }
+          update={ r => this.updateAndMerge('load', r) } />
+      </SimpleAccordion>
+      <br />
       <SimpleAccordion title={
         "Motor (" +
           this.props.cfg.motor.num + "x " +
           Motors[this.props.cfg.motor.key].name + 
           " < " + this.props.cfg.motor.reduction + ")"}>
-        <MotorSelection
+        <MotorConfig
           motor={ this.props.cfg.motor }
           update={ m => this.updateAndMerge('motor', m) } />
       </SimpleAccordion>

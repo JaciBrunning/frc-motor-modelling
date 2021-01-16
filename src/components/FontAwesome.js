@@ -2,7 +2,7 @@ import React from 'react';
 
 class FAIcon extends React.PureComponent {
   static defaultProps = {
-    style: 'solid',
+    icon_style: 'solid',
     size: null
   };
 
@@ -13,7 +13,7 @@ class FAIcon extends React.PureComponent {
 
   getClassName = () => {
     let cls = [
-      FAIcon.styles[this.props.style],
+      FAIcon.styles[this.props.icon_style],
       `fa-${this.props.icon}`,
       this.props.className
     ];

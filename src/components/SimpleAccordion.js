@@ -12,7 +12,7 @@ class SimpleAccordion extends React.Component {
     return <Accordion defaultActiveKey="1" onSelect={ e => this.setState({ selected: e }) }>
       <Card>
         <Accordion.Toggle as={Card.Header} eventKey="1">
-          <FAIcon size='lg' icon={ this.state.selected == "1" ? "caret-up" : "caret-down" } />
+          <FAIcon size='lg' icon={ this.state.selected === "1" ? "caret-up" : "caret-down" } />
           &nbsp;
           { this.props.title }
         </Accordion.Toggle>
