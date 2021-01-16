@@ -76,19 +76,20 @@ class MotorSelection extends React.Component {
         </Col>
       </Form.Row>
       <hr />
-      <Form.Row>
-        <Col>
-          <MathComponent tex={ "R_{equiv} = " + this.getMotor().R().toFixed(4) + " \\Omega"  }/>
-        </Col>
-      </Form.Row>
-      <Form.Row>
-        <Col>
-          <MathComponent tex={ "k_\\omega = " + this.getMotor().kw().toFixed(5) + "\\ \\frac{Vs}{rad}"  }/>
-        </Col>
-        <Col>
-          <MathComponent tex={ "k_\\tau = " + this.getMotor().kt().toFixed(3) + "\\ \\frac{A}{Nm}"  }/>
-        </Col>
-      </Form.Row>
+      <div className="text-dark small">
+        <center><i> Equivalent Motor Coefficients </i></center>
+        <Form.Row>
+          <Col>
+            <MathComponent tex={ "R_{equiv} = " + this.getMotor().R().toFixed(4) + " \\Omega"  }/>
+          </Col>
+          <Col>
+            <MathComponent tex={ "k_\\omega = " + this.getMotor().kw().toFixed(5) + "\\ \\frac{Vs}{rad}"  }/>
+          </Col>
+          <Col>
+            <MathComponent tex={ "k_\\tau = " + this.getMotor().kt().toFixed(3) + "\\ \\frac{A}{Nm}"  }/>
+          </Col>
+        </Form.Row>
+      </div>
     </Form>
   }
 }

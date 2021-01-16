@@ -1,13 +1,13 @@
 import React from 'react';
 import Configuration from './Configuration';
 import { Tabs, Tab, Button } from 'react-bootstrap';
-
+import FAIcon from './FontAwesome';
 class ConfigPanel extends React.Component {
   render() {
     return <div>
       <p>
         <Button variant="success" size="sm" onClick={ this.props.addConfig }>
-          + Configuration
+          <FAIcon icon="plus" /> Configuration
         </Button>
       </p>
       {
