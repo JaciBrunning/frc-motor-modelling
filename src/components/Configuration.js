@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Col, Button } from 'react-bootstrap';
-import SimpleAccordion from './SimpleAccordion';
+import SimpleAccordion from './jellybean/SimpleAccordion';
 import MotorConfig from './MotorConfig';
 import { Motors } from '../framework/Motor';
-import FAIcon from './FontAwesome';
+import FAIcon from './jellybean/FontAwesome';
 import LoadConfig from './LoadConfig';
 
 class Configuration extends React.Component {

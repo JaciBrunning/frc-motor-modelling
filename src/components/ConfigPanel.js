@@ -1,7 +1,7 @@
 import React from 'react';
 import Configuration from './Configuration';
 import { Tabs, Tab, Button } from 'react-bootstrap';
-import FAIcon from './FontAwesome';
+import FAIcon from './jellybean/FontAwesome';
 import SimConfig from './SimConfig';
 class ConfigPanel extends React.Component {
   render() {

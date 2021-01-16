@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import UnitInput, { Units } from './UnitInput';
+import UnitInput, { Units } from './jellybean/UnitInput';
 
 class LoadConfig extends React.PureComponent {
   render() {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Motors, motorFromConfig } from '../framework/Motor';
 import { ButtonGroup, Button, Form, Col } from 'react-bootstrap';
 import { MathComponent } from 'mathjax-react';
-import UnitInput, { Units } from './UnitInput';
+import UnitInput, { Units } from './jellybean/UnitInput';
 
 class MotorConfig extends React.Component {
   constructor(props) {

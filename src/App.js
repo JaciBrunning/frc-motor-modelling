@@ -104,6 +104,11 @@ class App extends React.Component {
       <Container>
         <Row>
           <Col>
+            
+          </Col>
+        </Row>
+        <Row>
+          <Col>
             <ConfigPanel 
               configs={this.state.configs}
               addConfig={ () => { this.addConfig() } }

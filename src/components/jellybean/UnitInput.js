@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Col } from 'react-bootstrap';
 import HelpIcon from './HelpIcon';
-import * as Units from '../framework/Units';
-import Combo from './jellybean/Combo';
+import * as Units from '../../framework/Units';
+import Combo from './Combo';
 
 class UnitInput extends React.PureComponent {
   static defaultProps = {
