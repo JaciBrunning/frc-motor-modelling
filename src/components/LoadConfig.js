@@ -24,6 +24,16 @@ class LoadConfig extends React.PureComponent {
         tooltip='Load angle from the horizon, to calculate effective weight of the load.
         For example, a drivebase will have 0 load angle (horizontal), while an elevator will be 90 (vertical).'
       />
+      <RowInput
+        className='mt-2'
+        label='Wheel / Pulley Diameter'
+        type='number'
+        min={0}
+        value={this.props.load.radius * 2}
+        onChange={ e => this.props.update({ radius: parseFloat(e.target.value) / 2 }) }
+        unit='mm'
+        tooltip='Diameter of the wheel, pulley, or moment arm that converts angular motion to linear motion (e.g. drivetrain wheels, elevator pulley).'
+      />
     </Form>
   }
 }

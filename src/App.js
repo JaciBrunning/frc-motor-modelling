@@ -10,12 +10,17 @@ class App extends React.Component {
     super(props)
     this.state = {
       config_counter: 1,
-      configs: {}
+      configs: {},
+      sim_config: {
+        time: 5,
+        dt: 0.1
+      }
     };
     this.addConfig = this.addConfig.bind(this);
     this.deleteConfig = this.deleteConfig.bind(this);
     this.updateConfig = this.updateConfig.bind(this);
     this.duplicateConfig = this.duplicateConfig.bind(this);
+    this.update = this.update.bind(this)
   }
 
   componentDidMount() {
@@ -39,7 +44,8 @@ class App extends React.Component {
           },
           load: {
             mass: 70,
-            angle: 0
+            angle: 0,
+            radius: 76.2 // mm
           }
         }
       },
@@ -79,6 +85,15 @@ class App extends React.Component {
     });
   }
 
+  update(key, newProps) {
+    this.setState({
+      [key]: {
+        ...this.state[key],
+        ...newProps
+      }
+    });
+  }
+
   render() {
     return <div>
       <center>
@@ -93,7 +108,9 @@ class App extends React.Component {
               addConfig={ () => { this.addConfig() } }
               deleteConfig={ this.deleteConfig }
               updateConfig={ this.updateConfig }
-              duplicateConfig={ this.duplicateConfig } />
+              duplicateConfig={ this.duplicateConfig }
+              sim_config={ this.state.sim_config }
+              update={ this.update } />
           </Col>
           <Col> <h3> Graph </h3> </Col>
         </Row>

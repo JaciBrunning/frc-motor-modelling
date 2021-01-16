@@ -13,7 +13,9 @@ class ConfigPanel extends React.Component {
       </p>
       <Tabs>
         <Tab key='sim' eventKey='sim' title="Sim Config">
-          <SimConfig />
+          <SimConfig
+            cfg={this.props.sim_config}
+            update={ (newProps) => this.props.update('sim_config', newProps) } />
         </Tab>
         { Object.values(this.props.configs).map(c => 
           <Tab key={c.id} eventKey={c.id} title={c.name}>
