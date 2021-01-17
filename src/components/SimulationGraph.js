@@ -2,6 +2,10 @@ import React from 'react';
 import { Line } from 'react-chartjs-2';
 
 class SimulationGraph extends React.Component {
+  static defaultProps = {
+    xLabel: "Time"
+  }
+
   constructor(props) {
     super(props)
     this.data = this.data.bind(this);
@@ -9,6 +13,7 @@ class SimulationGraph extends React.Component {
 
   colours = [ '#34225c', '#71286b', '#aa2d6c', '#db425f', '#fc6749', '#ff9729', '#ffcb00', '#e6ff1c' ]
 
+  // Keep arrays short so the graphs don't eat a ton of memory
   filter(arr, n_max) {
     if (arr.length < n_max)
       return arr;
@@ -41,6 +46,7 @@ class SimulationGraph extends React.Component {
 
   render() {
     return <Line data={this.data()} options={{
+      maintainAspectRatio: false,
       title: {
         display: true,
         text: this.props.title,
@@ -58,16 +64,16 @@ class SimulationGraph extends React.Component {
             maxTicksLimit: 10
           },
           scaleLabel: {
-            display: true,
-            labelString: this.props.xLabel
+            display: this.props.xLabel !== undefined,
+            labelString: this.props.xUnit !== undefined ? ( this.props.xLabel + " (" + this.props.xUnit.name + ")" ) : this.props.xLabel
           }
         }],
         yAxes: [{
           display: true,
           label: { callback: (v) => parseFloat(v.toFixed(3)) },
           scaleLabel: {
-            display: true,
-            labelString: this.props.yLabel
+            display: this.props.yLabel !== undefined,
+            labelString: this.props.yUnit !== undefined ? ( this.props.yLabel + " (" + this.props.yUnit.name + ")" ) : this.props.yLabel
           }
         }]
       },

@@ -95,6 +95,15 @@ export const lb = new Unit('lb', 0.453592, kg);
 // Voltage
 export const V = new Unit('V', 1);
 
+// Current
+export const A = new Unit('A', 1);
+
 // Angle
 export const rad = new Unit('rad', 1);
 export const deg = new Unit('deg', Math.PI / 180, rad);
+
+// Velocity
+export const mps = new Unit('m/s', 1);
+
+// Acceleration
+export const mpsps = new Unit('m/s/s', 1);

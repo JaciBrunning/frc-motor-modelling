@@ -20,7 +20,29 @@ class App extends React.Component {
       configs: {},
       sim_config: {
         time: Units.s.make(5),
-        dt: Units.ms.make(10)
+        dt: Units.ms.make(10),
+        graphs: [
+          {
+            key: "displacement",
+            title: "Displacement",
+            unit: Units.m
+          },
+          {
+            key: "velocity",
+            title: "Velocity",
+            unit: Units.mps
+          },
+          {
+            key: "acceleration",
+            title: "Acceleration",
+            unit: Units.mpsps
+          },
+          {
+            key: "current",
+            title: "Current",
+            unit: Units.A
+          }
+        ]
       },
       simulationResults: null,
       simLoading: false
@@ -115,12 +137,12 @@ class App extends React.Component {
   }
 
   render() {
-    return <div>
+    return <div className='mx-5'>
       <center>
         <h2>Jaci's FRC Motor Selection Tool</h2>
       </center>
       <br />
-      <Container>
+      <Container fluid={true}>
         <Row className='mb-5'>
           <Col>
             <center>
@@ -131,7 +153,7 @@ class App extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className="config-col">
             <ConfigPanel 
               configs={this.state.configs}
               addConfig={ () => { this.addConfig() } }
@@ -141,36 +163,24 @@ class App extends React.Component {
               sim_config={ this.state.sim_config }
               update={ this.update } />
           </Col>
-          <Col>
-            {
-              this.state.simulationResults ? <div>
-                <SimulationGraph
-                  title="Displacement"
-                  legend
-                  configs={ this.state.simConfigs }
-                  x={ this.state.simulationResults.time }           xLabel="Time (s)"
-                  y={ this.state.simulationResults.displacement }   yLabel="Displacement (m)"
-                />
-                <SimulationGraph
-                  title="Velocity"
-                  configs={ this.state.simConfigs }
-                  x={ this.state.simulationResults.time }           xLabel="Time (s)"
-                  y={ this.state.simulationResults.velocity }       yLabel="Velocity (m/s)"
-                />
-                <SimulationGraph
-                  title="Acceleration"
-                  configs={ this.state.simConfigs }
-                  x={ this.state.simulationResults.time }           xLabel="Time (s)"
-                  y={ this.state.simulationResults.acceleration }   yLabel="Acceleration (m/s^2)"
-                />
-                <SimulationGraph
-                  title="Current"
-                  configs={ this.state.simConfigs }
-                  x={ this.state.simulationResults.time }           xLabel="Time (s)"
-                  y={ this.state.simulationResults.current }        yLabel="Motor Current (A)"
-                />
-              </div> : <h3> Run a simulation to get started! </h3>
-            }
+          <Col className="sim-col">
+            <Row>
+              {
+                this.state.simulationResults ? this.state.sim_config.graphs.map(g => (
+                  <div className={ 'sim-graph' }>
+                    <SimulationGraph
+                      title={ g.title }
+                      configs={ this.state.simConfigs }
+                      x={ this.state.simulationResults.time }
+                      y={ this.state.simulationResults[g.key] }
+                      xUnit={ this.state.sim_config.time.unit }
+                      yUnit={ g.unit }
+                      xLabel={ "Time" }
+                      yLabel={ g.title } />
+                  </div>
+                )) : <h2> Run a simulation to get started! </h2>
+              }
+            </Row>
           </Col>
         </Row>
       </Container>
