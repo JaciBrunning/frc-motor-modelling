@@ -22,7 +22,7 @@ class FAIcon extends React.PureComponent {
   }
 
   render() {
-    return <React.Fragment><i className={this.getClassName()} ></i> &nbsp; </React.Fragment>
+    return <React.Fragment><i className={this.getClassName()} ></i> { this.props.nospace ? '' : '\u00A0' /* nbsp */ } </React.Fragment>
   }
 }
 

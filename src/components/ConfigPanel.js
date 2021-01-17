@@ -20,7 +20,7 @@ class ConfigPanel extends React.Component {
   render() {
     return <div>
       <Tabs activeKey={ this.state.selected} onSelect={k => this.setTab(k)} >
-        <Tab key='sim' eventKey='sim' title="Sim Config">
+        <Tab key='sim' eventKey='sim' title={ <FAIcon icon='cog' nospace /> }>
           <SimConfig
             cfg={this.props.sim_config}
             update={ (newProps) => this.props.update('sim_config', newProps) } />

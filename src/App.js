@@ -10,6 +10,7 @@ import SimulationGraph from './components/SimulationGraph';
 /* eslint-disable import/no-webpack-loader-syntax */
 import SimulationWorker from 'comlink-loader!./framework/SimulationAdapter';
 import ExportWorker from 'comlink-loader!./framework/ExportAdapter';
+import { KitOfParts, Elevator } from './framework/DefaultConfigs';
 
 class App extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class App extends React.Component {
       config_counter: 1,
       configs: {},
       sim_config: {
-        time: Units.s.make(5),
+        time: Units.s.make(3),
         dt: Units.ms.make(10),
         animate: true,
         graphs: [
@@ -80,7 +81,9 @@ class App extends React.Component {
 
   componentDidMount() {
     // Add default config
-    this.addConfig("Kit of Parts", this.runSimulation);
+    this.addConfig("KoP Drivetrain", KitOfParts(), () => {
+      this.addConfig("Elevator", Elevator(), this.runSimulation);
+    });
   }
 
   toggleAutoSim() {
@@ -95,26 +98,15 @@ class App extends React.Component {
       this.runSimulation();
   }
 
-  addConfig(name, callback) {
-    let id = uuid();
+  addConfig(name, template, callback) {
+    let id = this.state.config_counter;
     this.setState({
       configs: {
         ...this.state.configs,
         [id]: {
-          id: id,
-          name: name || ("Cfg " + this.state.config_counter),
-          num: this.state.config_counter,
-          motor: {
-            key: "CIM",
-            voltage: Units.V.make(12.0),
-            num: 4,
-            reduction: 10.75
-          },
-          load: {
-            accel: Units.mpsps.make(0),
-            mass: Units.kg.make(70),
-            radius: Units.inch.make(6 / 2)
-          }
+          ...template,
+          id: id, 
+          name: name
         }
       },
       config_counter: this.state.config_counter + 1
@@ -127,20 +119,8 @@ class App extends React.Component {
     }, this.triggerAutoSim);
   }
 
-  duplicateConfig(cfg) {
-    let id = uuid();
-    this.setState({
-      configs: {
-        ...this.state.configs,
-        [id]: {
-          ...cfg,
-          id: id,
-          name: cfg.name + " (Copy)",
-          num: this.state.config_counter
-        }
-      },
-      config_counter: this.state.config_counter + 1
-    }, this.triggerAutoSim);
+  duplicateConfig(cfg, callback) {
+    this.addConfig(cfg.name + " (Copy)", cfg, callback);
   }
 
   updateConfig(id, newProps) {
@@ -218,7 +198,7 @@ class App extends React.Component {
           <Col className="config-col my-3">
             <ConfigPanel 
               configs={this.state.configs}
-              addConfig={ () => { this.addConfig() } }
+              addConfig={ () => { this.addConfig( `KoP ${this.state.config_counter}`, KitOfParts() ) } }
               deleteConfig={ this.deleteConfig }
               updateConfig={ this.updateConfig }
               duplicateConfig={ this.duplicateConfig }

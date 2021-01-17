@@ -45,7 +45,7 @@ class SimulationGraph extends React.Component {
           data: this.maybeScale(this.filter(this.props.y[id], n), this.props.yUnit),
           fill: false,
           pointRadius: 0,
-          borderColor: this.colours[this.props.configs[id].num % this.colours.length]
+          borderColor: this.colours[id % this.colours.length]
         }
       })
     };

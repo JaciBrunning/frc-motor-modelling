@@ -7,7 +7,7 @@ class SimControl extends React.PureComponent {
     return <div>
       <Button
         className='m-1'
-        variant={ this.props.loading ? 'info' : 'success' }
+        variant={ this.props.auto ? 'outline-secondary' : (this.props.loading ? 'info' : 'success') }
         onClick={ this.props.onRun }
         disabled={ this.props.loading || this.props.auto }>
         <FAIcon
@@ -21,7 +21,7 @@ class SimControl extends React.PureComponent {
         onClick={ this.props.onAutoToggle }
         variant={ this.props.auto ? 'warning' : 'primary' }>
         <FAIcon
-          icon='sync'
+          icon='sync-alt'
           spin={ this.props.auto } />
         {
           this.props.auto ? 'Stop Auto Sim' : 'Start Auto Sim'
