@@ -1,15 +1,14 @@
 import React from 'react';
-import { Form, Col } from 'react-bootstrap';
+import { Form, Col, Row } from 'react-bootstrap';
 import HelpIcon from './HelpIcon';
 import * as Units from '../../framework/Units';
 import UnitSelector from './UnitSelector';
 
 class UnitInput extends React.PureComponent {
   static defaultProps = {
-    md_lab: "5",
-    md_input: "3",
-    md_tooltip: "1",
-    md_unit: "2",
+    sm_lab: 5,
+    sm_input: 3,
+    sm_unit: 4,
     unit: undefined,
     parse: parseFloat,
     round: 3
@@ -40,29 +39,33 @@ class UnitInput extends React.PureComponent {
   }
 
   render() {
-    var { className, md_lab, label, md_input, md_unit, md_tooltip, tooltip, unit, parse, value, onChange, ...controlProps } = this.props;
+    var { className, sm_lab, label, sm_input, sm_unit, sm_tooltip, tooltip, unit, parse, value, onChange, ...controlProps } = this.props;
     return <Form.Row className={className}>
       {
         label ? 
-          <Form.Label column="sm" md={ md_lab }>
+          <Form.Label column="sm" sm={ sm_lab }>
             { label }:
           </Form.Label> : <React.Fragment />
       }
-      <Col md={ md_input }>
+      <Col sm={ sm_input }>
         <Form.Control size="sm" value={ this.getValue() } onChange={ this.changeValue } {...controlProps} />
       </Col>
-      <Col md={md_unit}>
-        {
-          unit ? 
-            <UnitSelector unit={ unit } value={ value.unit } onChange={ u => onChange(value.to(u)) } />
-            : <React.Fragment />
-        }
-      </Col>
-      <Col md={ md_tooltip }>
-        {
-          tooltip ? 
-            <HelpIcon tooltip={ tooltip } /> : <React.Fragment />
-        }
+      <Col sm={sm_unit}>
+        <Row>
+          <Col>
+            {
+              unit ? 
+                <UnitSelector unit={ unit } value={ value.unit } onChange={ u => onChange(value.to(u)) } />
+                : <React.Fragment />
+            }
+          </Col>
+          <Col className='pl-0'>
+            {
+              tooltip ? 
+                <HelpIcon tooltip={ tooltip } /> : <React.Fragment />
+            }
+          </Col>
+        </Row>
       </Col>
     </Form.Row>
   }

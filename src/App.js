@@ -147,7 +147,7 @@ class App extends React.Component {
       </center>
       <br />
       <Container fluid={true}>
-        <Row className='mb-5'>
+        <Row>
           <Col>
             <center>
               <SimControl
@@ -157,7 +157,7 @@ class App extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col className="config-col">
+          <Col className="config-col my-3">
             <ConfigPanel 
               configs={this.state.configs}
               addConfig={ () => { this.addConfig() } }
@@ -167,7 +167,7 @@ class App extends React.Component {
               sim_config={ this.state.sim_config }
               update={ this.update } />
           </Col>
-          <Col className="sim-col">
+          <Col className="sim-col my-3">
             <Row>
               {
                 this.state.simulationResults ? this.state.sim_config.graphs.filter(g => g.enabled).map(g => (

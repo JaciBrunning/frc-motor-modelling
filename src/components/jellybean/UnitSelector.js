@@ -9,9 +9,10 @@ class UnitSelector extends React.PureComponent {
   };
 
   render() {
-    return <Combo value={ this.props.value } onChange={ this.props.onChange }>
+    let { value, onChange, unit, ...props } = this.props;
+    return <Combo value={ value } onChange={ onChange } {...props}>
       {
-        (this.props.unit || this.props.value).base.allVariants().map(u => <Combo.Option key={u.name} data={u}> { u.name } </Combo.Option>)
+        (unit || value).base.allVariants().map(u => <Combo.Option key={u.name} data={u}> { u.name } </Combo.Option>)
       }
     </Combo>
   }
