@@ -31,9 +31,11 @@ class SimControl extends React.PureComponent {
       <Button
         className='m-1'
         onClick={ this.props.onExport }
-        variant='info'>
+        variant='info'
+        disabled={ this.props.exporting }>
         <FAIcon
-          icon='save' />
+          icon={ this.props.exporting ? 'cog' : 'save' }
+          spin={ this.props.exporting } />
         Export CSVs
       </Button>
     </div>

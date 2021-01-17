@@ -51,7 +51,8 @@ class App extends React.Component {
       simulationResults: undefined,
       simConfigs: undefined,
       simLoading: false,
-      simAuto: false
+      simAuto: false,
+      exportRunning: false
     };
 
     this.addConfig = this.addConfig.bind(this);
@@ -150,28 +151,33 @@ class App extends React.Component {
     }, this.triggerAutoSim);
   }
 
-  runSimulation() {
+  runSimulation(callback) {
     this.setState({ simLoading: true });
     const worker = new SimulationWorker();
     (new worker.SimulationAdapter(this.state.sim_config, this.state.configs))
       .then(a => a.run())
-      .then(o => this.setState({ simulationResults: o.results, simConfigs: o.configs, simLoading: false }));
+      .then(o => this.setState({ simulationResults: o.results, simConfigs: o.configs, simLoading: false }, callback));
   }
 
   exportData() {
-    const worker = new ExportWorker();
-    (new worker.ExportAdapter(this.state.simulationResults, this.state.sim_config, this.state.simConfigs))
-      .then(a => a.run())
-      .then(results => {
-        Object.keys(results).forEach(name => {
-          let hidden = document.createElement('a');
-          hidden.target = '_blank';
-          hidden.download = `${name}.csv`
-          hidden.href = `data:text/csv;charset=utf-8,` + encodeURI(results[name])
-          hidden.click();
-          hidden.href = ''  // Clean that memory now, before it gets GC'd
+    // Run a simulation, then export
+    this.setState({ exportRunning: true })
+    this.runSimulation(() => {
+      const worker = new ExportWorker();
+      (new worker.ExportAdapter(this.state.simulationResults, this.state.sim_config, this.state.simConfigs))
+        .then(a => a.run())
+        .then(results => {
+          Object.keys(results).forEach(name => {
+            let hidden = document.createElement('a');
+            hidden.target = '_blank';
+            hidden.download = `${name}.csv`
+            hidden.href = `data:text/csv;charset=utf-8,` + encodeURI(results[name])
+            hidden.click();
+            hidden.href = ''  // Clean that memory now, before it gets GC'd
+          });
+          this.setState({ exportRunning: false });
         });
-      });
+  });
   }
 
   render() {
@@ -188,7 +194,8 @@ class App extends React.Component {
                 onRun={ this.runSimulation }
                 auto={ this.state.simAuto }
                 onAutoToggle={ this.toggleAutoSim }
-                onExport={ this.exportData } />
+                onExport={ this.exportData }
+                exporting={ this.state.exportRunning } />
             </center>
           </Col>
         </Row>
