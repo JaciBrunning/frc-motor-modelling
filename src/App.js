@@ -25,22 +25,26 @@ class App extends React.Component {
           {
             key: "displacement",
             title: "Displacement",
-            unit: Units.m
+            unit: Units.m,
+            enabled: true
           },
           {
             key: "velocity",
             title: "Velocity",
-            unit: Units.mps
+            unit: Units.mps,
+            enabled: true
           },
           {
             key: "acceleration",
             title: "Acceleration",
-            unit: Units.mpsps
+            unit: Units.mpsps,
+            enabled: true
           },
           {
             key: "current",
-            title: "Current",
-            unit: Units.A
+            title: "Current Total",
+            unit: Units.A,
+            enabled: true
           }
         ]
       },
@@ -166,7 +170,7 @@ class App extends React.Component {
           <Col className="sim-col">
             <Row>
               {
-                this.state.simulationResults ? this.state.sim_config.graphs.map(g => (
+                this.state.simulationResults ? this.state.sim_config.graphs.filter(g => g.enabled).map(g => (
                   <div className={ 'sim-graph' }>
                     <SimulationGraph
                       title={ g.title }

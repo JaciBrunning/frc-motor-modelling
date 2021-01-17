@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Col } from 'react-bootstrap';
 import HelpIcon from './HelpIcon';
 import * as Units from '../../framework/Units';
-import Combo from './Combo';
+import UnitSelector from './UnitSelector';
 
 class UnitInput extends React.PureComponent {
   static defaultProps = {
@@ -17,7 +17,6 @@ class UnitInput extends React.PureComponent {
 
   constructor(props) {
     super(props)
-    this.base_unit = this.props.unit ? this.props.unit.base : undefined;
     this.changeValue = this.changeValue.bind(this);
     this.getValue = this.getValue.bind(this);
   }
@@ -26,7 +25,7 @@ class UnitInput extends React.PureComponent {
     let val = e.target.value;
     let n = this.props.parse(val);
 
-    if (this.base_unit) {
+    if (this.props.unit) {
       this.props.onChange(new Units.Measurement(this.props.value.unit, n));
     } else {
       this.props.onChange(n);
@@ -34,7 +33,7 @@ class UnitInput extends React.PureComponent {
   }
 
   getValue() {
-    let val = this.base_unit ? this.props.value.value : this.props.value;
+    let val = this.props.unit ? this.props.value.value : this.props.value;
     if (this.props.parse === parseFloat)
       val = parseFloat(val.toFixed(this.props.round))   // Parsing again is a little trick to remove trailing zeros
     return val
@@ -50,18 +49,12 @@ class UnitInput extends React.PureComponent {
           </Form.Label> : <React.Fragment />
       }
       <Col md={ md_input }>
-        {
-          <Form.Control size="sm" value={ this.getValue() } onChange={ this.changeValue } {...controlProps} />
-        }
+        <Form.Control size="sm" value={ this.getValue() } onChange={ this.changeValue } {...controlProps} />
       </Col>
       <Col md={md_unit}>
         {
-          this.base_unit ? 
-            <Combo value={ value.unit } onChange={ u => onChange(value.to(u)) }>
-              {
-                this.base_unit.allVariants().map(u => <Combo.Option key={u.name} data={u}> { u.name } </Combo.Option>)
-              }
-            </Combo>
+          unit ? 
+            <UnitSelector unit={ unit } value={ value.unit } onChange={ u => onChange(value.to(u)) } />
             : <React.Fragment />
         }
       </Col>

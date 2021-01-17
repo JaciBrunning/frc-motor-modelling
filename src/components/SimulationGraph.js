@@ -28,14 +28,20 @@ class SimulationGraph extends React.Component {
     return out;
   }
 
+  maybeScale(arr, unit) {
+    if (unit)
+      return arr.map(v => unit.fromBase(v));
+    return arr;
+  }
+
   data() {
     const n = 1000;
     return {
-      labels: this.filter(this.props.x, n),
+      labels: this.maybeScale(this.filter(this.props.x, n), this.props.xUnit),
       datasets: Object.keys(this.props.y).map(id => {
         return {
           label: this.props.configs[id].name,
-          data: this.filter(this.props.y[id], n),
+          data: this.maybeScale(this.filter(this.props.y[id], n), this.props.yUnit),
           fill: false,
           pointRadius: 0,
           borderColor: this.colours[this.props.configs[id].num % this.colours.length]
