@@ -1,16 +1,16 @@
 import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import ConfigPanel from './components/ConfigPanel';
 import './app.scss';
-import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import * as Units from './framework/Units';
 import SimControl from './components/SimControl';
 import SimulationGraph from './components/SimulationGraph';
+import { KitOfParts, Elevator } from './framework/DefaultConfigs';
+import FAIcon from './components/jellybean/FontAwesome';
 /* eslint-disable import/no-webpack-loader-syntax */
 import SimulationWorker from 'comlink-loader!./framework/SimulationAdapter';
 import ExportWorker from 'comlink-loader!./framework/ExportAdapter';
-import { KitOfParts, Elevator } from './framework/DefaultConfigs';
 
 class App extends React.Component {
   constructor(props) {
@@ -178,7 +178,14 @@ class App extends React.Component {
   render() {
     return <div className='mx-5'>
       <center>
-        <h2>Jaci's FRC Motor Selection Tool</h2>
+        <h2>
+          Jaci's FRC Motor Selection Tool
+          &nbsp;
+          <Button href='https://github.com/JaciBrunning/frc-motor-modelling' target='_blank' variant='outline-dark'> 
+            <FAIcon icon_style='brand' icon='github'/>
+            View on Github
+          </Button>
+        </h2>
       </center>
       <Container fluid={true}>
         <Row>

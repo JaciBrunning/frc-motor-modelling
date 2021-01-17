@@ -7,7 +7,8 @@ class FAIcon extends React.PureComponent {
 
   static styles = {
     regular: "far",
-    solid: "fas"
+    solid: "fas",
+    brand: "fab"
   };
 
   getClassName = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Col } from 'react-bootstrap';
 import UnitSelector from './UnitSelector';
-
+import HelpIcon from './HelpIcon';
 class GraphConfig extends React.PureComponent {
   static defaultProps = {
     sm_lab: "5",

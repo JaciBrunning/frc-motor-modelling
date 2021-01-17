@@ -3,7 +3,7 @@ import { Form, Col } from 'react-bootstrap';
 import UnitInput, { Units } from './jellybean/UnitInput';
 import GraphConfig from './jellybean/GraphConfig';
 import SimpleAccordion from './jellybean/SimpleAccordion';
-
+import _ from 'lodash';
 class SimConfig extends React.Component {
   constructor(props) {
     super(props);
