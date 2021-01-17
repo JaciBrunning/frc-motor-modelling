@@ -3,7 +3,8 @@ import { Line } from 'react-chartjs-2';
 
 class SimulationGraph extends React.Component {
   static defaultProps = {
-    xLabel: "Time"
+    xLabel: "Time",
+    animate: true
   }
 
   constructor(props) {
@@ -51,7 +52,7 @@ class SimulationGraph extends React.Component {
   }
 
   render() {
-    return <Line data={this.data()} options={{
+    return <Line key={ this.props.title } data={this.data()} options={{
       maintainAspectRatio: false,
       title: {
         display: true,
@@ -60,6 +61,9 @@ class SimulationGraph extends React.Component {
       },
       legend: {
         display: this.props.legend ? true : false
+      },
+      animation: {
+        duration: this.props.animate ? 500 : 0
       },
       scales: {
         xAxes: [{

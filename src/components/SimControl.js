@@ -6,6 +6,7 @@ class SimControl extends React.PureComponent {
   render() {
     return <div>
       <Button
+        className='m-1'
         variant={ this.props.loading ? 'info' : 'success' }
         onClick={ this.props.onRun }
         disabled={ this.props.loading || this.props.auto }>
@@ -16,7 +17,7 @@ class SimControl extends React.PureComponent {
       </Button>
 
       <Button
-        className='mx-2'
+        className='m-1'
         onClick={ this.props.onAutoToggle }
         variant={ this.props.auto ? 'warning' : 'primary' }>
         <FAIcon
@@ -25,6 +26,15 @@ class SimControl extends React.PureComponent {
         {
           this.props.auto ? 'Stop Auto Sim' : 'Start Auto Sim'
         }
+      </Button>
+
+      <Button
+        className='m-1'
+        onClick={ this.props.onExport }
+        variant='info'>
+        <FAIcon
+          icon='save' />
+        Export CSVs
       </Button>
     </div>
   }

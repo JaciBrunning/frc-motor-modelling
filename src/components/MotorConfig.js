@@ -3,6 +3,7 @@ import { Motors, motorFromConfig } from '../framework/Motor';
 import { ButtonGroup, Button, Form, Col } from 'react-bootstrap';
 import { MathComponent } from 'mathjax-react';
 import UnitInput, { Units } from './jellybean/UnitInput';
+import HelpIcon from './jellybean/HelpIcon';
 
 class MotorConfig extends React.Component {
   constructor(props) {
@@ -70,15 +71,23 @@ class MotorConfig extends React.Component {
       
       <hr />
       <div className="text-dark small">
-        <center><i> Equivalent Motor Coefficients </i></center>
+        <center><i> Equivalent Motor Coefficients </i> <HelpIcon tooltip="Mathematical coefficients for a single motor model, after merging multiple motors and applying the gearbox reduction." /> </center>
         <Form.Row>
           <Col>
+            <MathComponent tex={ "V = IR + k_\\omega \\omega" } />
+          </Col>
+          <Col>
+            <MathComponent tex={ "I = k_\\tau \\tau" } />
+          </Col>
+        </Form.Row>
+        <Form.Row>
+          <Col className='align-self-center'>
             <MathComponent tex={ "R_{equiv} = " + this.getMotor().R().toFixed(4) + " \\Omega"  }/>
           </Col>
-          <Col>
+          <Col className='align-self-center'>
             <MathComponent tex={ "k_\\omega = " + this.getMotor().kw().toFixed(5) + "\\ \\frac{Vs}{rad}"  }/>
           </Col>
-          <Col>
+          <Col className='align-self-center'>
             <MathComponent tex={ "k_\\tau = " + this.getMotor().kt().toFixed(3) + "\\ \\frac{A}{Nm}"  }/>
           </Col>
         </Form.Row>

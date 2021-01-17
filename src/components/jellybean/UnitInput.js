@@ -59,7 +59,7 @@ class UnitInput extends React.PureComponent {
                 : <React.Fragment />
             }
           </Col>
-          <Col className='pl-0'>
+          <Col className='pl-0' xs='3'>
             {
               tooltip ? 
                 <HelpIcon tooltip={ tooltip } /> : <React.Fragment />

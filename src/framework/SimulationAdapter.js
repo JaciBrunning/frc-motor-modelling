@@ -13,8 +13,7 @@ export class SimulationAdapter {
     this.sim_config = sim_config;
     this.configs = configs;
   }
-
-
+  
   run() {
     let duration = o2unit(this.sim_config.time).toBase();
     let dt = o2unit(this.sim_config.dt).toBase();
@@ -45,6 +44,6 @@ export class SimulationAdapter {
       });
     });
     
-    return results;
+    return { results: results, configs: this.configs };
   }
 };

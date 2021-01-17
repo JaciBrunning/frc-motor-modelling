@@ -9,16 +9,17 @@ class SimpleAccordion extends React.Component {
   }
 
   render() {
-    return <Accordion defaultActiveKey="1" onSelect={ e => this.setState({ selected: e }) }>
+    var { title, children, ...props } = this.props;
+    return <Accordion defaultActiveKey="1" onSelect={ e => this.setState({ selected: e }) } {...props}>
       <Card>
         <Accordion.Toggle as={Card.Header} eventKey="1">
           <FAIcon size='lg' icon={ this.state.selected === "1" ? "caret-up" : "caret-down" } />
           &nbsp;
-          { this.props.title }
+          { title }
         </Accordion.Toggle>
         <Accordion.Collapse eventKey="1">
           <Card.Body>
-            { this.props.children }
+            { children }
           </Card.Body>
         </Accordion.Collapse>
       </Card>

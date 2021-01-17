@@ -9,6 +9,7 @@ import SimControl from './components/SimControl';
 import SimulationGraph from './components/SimulationGraph';
 /* eslint-disable import/no-webpack-loader-syntax */
 import SimulationWorker from 'comlink-loader!./framework/SimulationAdapter';
+import ExportWorker from 'comlink-loader!./framework/ExportAdapter';
 
 class App extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class App extends React.Component {
       sim_config: {
         time: Units.s.make(5),
         dt: Units.ms.make(10),
+        animate: true,
         graphs: [
           {
             key: "displacement",
@@ -46,12 +48,11 @@ class App extends React.Component {
           }
         ]
       },
-      simulationResults: null,
+      simulationResults: undefined,
+      simConfigs: undefined,
       simLoading: false,
       simAuto: false
     };
-
-    this.runSimulation();
 
     this.addConfig = this.addConfig.bind(this);
     this.deleteConfig = this.deleteConfig.bind(this);
@@ -61,11 +62,12 @@ class App extends React.Component {
     this.runSimulation = this.runSimulation.bind(this);
     this.triggerAutoSim = this.triggerAutoSim.bind(this);
     this.toggleAutoSim = this.toggleAutoSim.bind(this);
+    this.exportData = this.exportData.bind(this);
   }
 
   componentDidMount() {
     // Add default config
-    this.addConfig("Kit of Parts AM14U4");
+    this.addConfig("Kit of Parts", this.runSimulation);
   }
 
   toggleAutoSim() {
@@ -80,14 +82,14 @@ class App extends React.Component {
       this.runSimulation();
   }
 
-  addConfig(name) {
+  addConfig(name, callback) {
     let id = uuid();
     this.setState({
       configs: {
         ...this.state.configs,
         [id]: {
           id: id,
-          name: name || ("Cfg #" + this.state.config_counter),
+          name: name || ("Cfg " + this.state.config_counter),
           num: this.state.config_counter,
           motor: {
             key: "CIM",
@@ -102,7 +104,7 @@ class App extends React.Component {
         }
       },
       config_counter: this.state.config_counter + 1
-    }, this.triggerAutoSim);
+    }, callback || this.triggerAutoSim);
   }
 
   deleteConfig(id) {
@@ -153,7 +155,23 @@ class App extends React.Component {
     const worker = new SimulationWorker();
     (new worker.SimulationAdapter(this.state.sim_config, this.state.configs))
       .then(a => a.run())
-      .then(results => this.setState({ simulationResults: results, simConfigs: this.state.configs, simLoading: false }));
+      .then(o => this.setState({ simulationResults: o.results, simConfigs: o.configs, simLoading: false }));
+  }
+
+  exportData() {
+    const worker = new ExportWorker();
+    (new worker.ExportAdapter(this.state.simulationResults, this.state.sim_config, this.state.simConfigs))
+      .then(a => a.run())
+      .then(results => {
+        Object.keys(results).forEach(name => {
+          let hidden = document.createElement('a');
+          hidden.target = '_blank';
+          hidden.download = `${name}.csv`
+          hidden.href = `data:text/csv;charset=utf-8,` + encodeURI(results[name])
+          hidden.click();
+          hidden.href = ''  // Clean that memory now, before it gets GC'd
+        });
+      });
   }
 
   render() {
@@ -161,7 +179,6 @@ class App extends React.Component {
       <center>
         <h2>Jaci's FRC Motor Selection Tool</h2>
       </center>
-      <br />
       <Container fluid={true}>
         <Row>
           <Col>
@@ -170,7 +187,8 @@ class App extends React.Component {
                 loading={ this.state.simLoading }
                 onRun={ this.runSimulation }
                 auto={ this.state.simAuto }
-                onAutoToggle={ this.toggleAutoSim }/>
+                onAutoToggle={ this.toggleAutoSim }
+                onExport={ this.exportData } />
             </center>
           </Col>
         </Row>
@@ -191,8 +209,10 @@ class App extends React.Component {
                 this.state.simulationResults ? this.state.sim_config.graphs.filter(g => g.enabled).map((g, i) => (
                   <div className={ 'sim-graph' }>
                     <SimulationGraph
+                      key={ g.key }
                       title={ g.title }
                       legend={ i === 0 }
+                      animate={ this.state.sim_config.animate }
                       configs={ this.state.simConfigs }
                       x={ this.state.simulationResults.time }
                       y={ this.state.simulationResults[g.key] }

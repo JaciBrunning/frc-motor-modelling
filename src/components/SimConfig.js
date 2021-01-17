@@ -1,7 +1,8 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Col } from 'react-bootstrap';
 import UnitInput, { Units } from './jellybean/UnitInput';
 import GraphConfig from './jellybean/GraphConfig';
+import SimpleAccordion from './jellybean/SimpleAccordion';
 
 class SimConfig extends React.Component {
   constructor(props) {
@@ -19,34 +20,43 @@ class SimConfig extends React.Component {
 
   render() {
     return <Form>
-      <h6 className="my-3"> Simulation Parameters </h6>
-      <UnitInput
-        className='my-3'
-        label='Simulation Duration'
-        type='number'
-        min={0}
-        value={ this.props.cfg.time }
-        onChange={ v => { this.props.update({ time: v }) } }
-        unit={Units.s}
-      />
-      <UnitInput
-        className='my-3'
-        label='Simulation Timestep'
-        type='number'
-        min={0.001}
-        step={0.001}
-        value={ this.props.cfg.dt }
-        onChange={ v => { this.props.update({ dt: v }) } }
-        tooltip='Simulation time interval (dt). The smaller, the finer the detail of the simulation.'
-        unit={Units.s}
-      />
-      <hr />
-      <h6 className="my-3"> Graphing </h6>
-      {
-        this.props.cfg.graphs.map(g => (
-          <GraphConfig key={g.key} className={ 'my-2' } cfg={g} onChange={ v => this.updateGraph(g.key, v) } />
-        ))
-      }
+      <SimpleAccordion title="Simulation Parameters" className='my-3'>
+        <UnitInput
+          className='mb-3'
+          label='Simulation Duration'
+          type='number'
+          min={0}
+          value={ this.props.cfg.time }
+          onChange={ v => { this.props.update({ time: v }) } }
+          unit={Units.s}
+        />
+        <UnitInput
+          label='Simulation Timestep'
+          type='number'
+          min={0.001}
+          step={0.001}
+          value={ this.props.cfg.dt }
+          onChange={ v => { this.props.update({ dt: v }) } }
+          tooltip='Simulation time interval (dt). The smaller, the finer the detail of the simulation.'
+          unit={Units.s}
+        />
+      </SimpleAccordion>
+      <SimpleAccordion title="Graphing Controls" className='my-3'>
+        <Form.Row className='mb-3'>
+          <Col>
+            <Form.Switch
+              id='graph-animate-switch'
+              label='Animate?'
+              checked={ this.props.cfg.animate }
+              onChange={ e => { this.props.update({ animate: !this.props.cfg.animate }) } } />
+          </Col>
+        </Form.Row>
+        {
+          this.props.cfg.graphs.map(g => (
+            <GraphConfig key={g.key} className={ 'mt-2' } cfg={g} onChange={ v => this.updateGraph(g.key, v) } />
+          ))
+        }
+      </SimpleAccordion>
     </Form>
   }
 }

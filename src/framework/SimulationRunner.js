@@ -11,6 +11,7 @@ class SimulationRunner {
   run() {
     let sim = new Simulation(this.motor, this.load);
     
+    sim.step(0, this.voltages[0]);
     for (let i = 1; i < this.times.length; i++) {
       const time = this.times[i];
       const voltage = this.voltages[i];
