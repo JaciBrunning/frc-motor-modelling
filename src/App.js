@@ -42,9 +42,21 @@ class App extends React.Component {
           },
           {
             key: "current",
-            title: "Current Total",
+            title: "Current Draw",
             unit: Units.A,
             enabled: true
+          },
+          {
+            key: "speed",
+            title: "Angular Velocity",
+            unit: Units.radps,
+            enabled: false
+          },
+          {
+            key: "torque",
+            title: "Torque",
+            unit: Units.Nm,
+            enabled: false
           }
         ]
       },
@@ -152,11 +164,13 @@ class App extends React.Component {
   }
 
   runSimulation(callback) {
+    // When triggered directly from a button or other sources, arguments can be objects...
+    let actualCallback = typeof callback === 'function' ? callback : undefined;
     this.setState({ simLoading: true });
     const worker = new SimulationWorker();
     (new worker.SimulationAdapter(this.state.sim_config, this.state.configs))
       .then(a => a.run())
-      .then(o => this.setState({ simulationResults: o.results, simConfigs: o.configs, simLoading: false }, callback));
+      .then(o => this.setState({ simulationResults: o.results, simConfigs: o.configs, simLoading: false }, actualCallback));
   }
 
   exportData() {

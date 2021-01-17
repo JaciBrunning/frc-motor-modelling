@@ -116,3 +116,12 @@ export const field_per_s = new Unit('FRC Fields / s', 54, ftps);
 // Acceleration
 export const mpsps = new Unit('m/s/s', 1);
 export const ftpsps = new Unit('ft/s/s', 12 * 25.4 / 1000, mpsps);
+
+// Angular Velocity
+export const radps = new Unit('rad/s', 1);
+export const degps = new Unit('deg/s', Math.PI / 180, radps);
+export const rpm   = new Unit('rpm', 2 * Math.PI / 60, radps);
+
+// Torque
+export const Nm = new Unit('Nm', 1);
+export const ftlb = new Unit('ftlb', 1.35582, Nm);
