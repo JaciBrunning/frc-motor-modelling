@@ -33,7 +33,7 @@ export class SimulationAdapter {
 
     Object.values(this.configs).forEach(cfg => {
       let motor = motorFromConfig(cfg.motor);
-      let load  = { mass: o2unit(cfg.load.mass).toBase(), radius: o2unit(cfg.load.radius).toBase() };
+      let load  = { mass: o2unit(cfg.load.mass).toBase(), radius: o2unit(cfg.load.radius).toBase(), accel: o2unit(cfg.load.accel).toBase() };
       let voltages = times.map(t => o2unit(cfg.motor.voltage).toBase())
       results.voltage[cfg.id] = voltages;
 

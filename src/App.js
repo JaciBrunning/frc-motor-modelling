@@ -111,6 +111,7 @@ class App extends React.Component {
             reduction: 10.75
           },
           load: {
+            accel: Units.mpsps.make(0),
             mass: Units.kg.make(70),
             radius: Units.inch.make(6 / 2)
           }

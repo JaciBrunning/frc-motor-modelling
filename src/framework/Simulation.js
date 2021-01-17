@@ -23,7 +23,7 @@ class Simulation {
     var last = (a) => is_first ? 0 : a[a.length - 1];
 
     let { current, torque } = this.motor.calculate(voltage, last(this.results.speed));
-    let acceleration = torque / (this.load.mass * this.load.radius);
+    let acceleration = torque / (this.load.mass * this.load.radius) + this.load.accel;
     let velocity = last(this.results.velocity) + acceleration * dt;
     let displacement = last(this.results.displacement) + velocity * dt + 0.5 * acceleration * dt * dt;
     let speed = velocity / this.load.radius;
