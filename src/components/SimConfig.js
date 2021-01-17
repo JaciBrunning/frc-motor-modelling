@@ -1,7 +1,6 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 import UnitInput, { Units } from './jellybean/UnitInput';
-import UnitSelector from './jellybean/UnitSelector';
 import GraphConfig from './jellybean/GraphConfig';
 
 class SimConfig extends React.Component {

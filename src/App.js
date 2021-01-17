@@ -6,8 +6,6 @@ import { v4 as uuid } from 'uuid';
 import _ from 'lodash';
 import * as Units from './framework/Units';
 import SimControl from './components/SimControl';
-import { motorFromConfig } from './framework/Motor';
-import SimulationRunner from './framework/SimulationRunner';
 import SimulationGraph from './components/SimulationGraph';
 /* eslint-disable import/no-webpack-loader-syntax */
 import SimulationWorker from 'comlink-loader!./framework/SimulationAdapter';
@@ -49,19 +47,37 @@ class App extends React.Component {
         ]
       },
       simulationResults: null,
-      simLoading: false
+      simLoading: false,
+      simAuto: false
     };
+
+    this.runSimulation();
+
     this.addConfig = this.addConfig.bind(this);
     this.deleteConfig = this.deleteConfig.bind(this);
     this.updateConfig = this.updateConfig.bind(this);
     this.duplicateConfig = this.duplicateConfig.bind(this);
     this.update = this.update.bind(this);
     this.runSimulation = this.runSimulation.bind(this);
+    this.triggerAutoSim = this.triggerAutoSim.bind(this);
+    this.toggleAutoSim = this.toggleAutoSim.bind(this);
   }
 
   componentDidMount() {
     // Add default config
     this.addConfig("Kit of Parts AM14U4");
+  }
+
+  toggleAutoSim() {
+    if (this.state.simAuto)
+      this.setState({ simAuto: false });
+    else
+      this.setState({ simAuto: true }, this.triggerAutoSim);
+  }
+
+  triggerAutoSim() {
+    if (this.state.simAuto)
+      this.runSimulation();
   }
 
   addConfig(name) {
@@ -86,13 +102,13 @@ class App extends React.Component {
         }
       },
       config_counter: this.state.config_counter + 1
-    });
+    }, this.triggerAutoSim);
   }
 
   deleteConfig(id) {
     this.setState({
       configs: _.omit(this.state.configs, id)
-    });
+    }, this.triggerAutoSim);
   }
 
   duplicateConfig(cfg) {
@@ -108,7 +124,7 @@ class App extends React.Component {
         }
       },
       config_counter: this.state.config_counter + 1
-    })
+    }, this.triggerAutoSim);
   }
 
   updateConfig(id, newProps) {
@@ -120,7 +136,7 @@ class App extends React.Component {
           ...newProps
         }
       }
-    });
+    }, this.triggerAutoSim);
   }
 
   update(key, newProps) {
@@ -129,7 +145,7 @@ class App extends React.Component {
         ...this.state[key],
         ...newProps
       }
-    });
+    }, this.triggerAutoSim);
   }
 
   runSimulation() {
@@ -152,7 +168,9 @@ class App extends React.Component {
             <center>
               <SimControl
                 loading={ this.state.simLoading }
-                onRun={ this.runSimulation }/>
+                onRun={ this.runSimulation }
+                auto={ this.state.simAuto }
+                onAutoToggle={ this.toggleAutoSim }/>
             </center>
           </Col>
         </Row>
@@ -170,10 +188,11 @@ class App extends React.Component {
           <Col className="sim-col my-3">
             <Row>
               {
-                this.state.simulationResults ? this.state.sim_config.graphs.filter(g => g.enabled).map(g => (
+                this.state.simulationResults ? this.state.sim_config.graphs.filter(g => g.enabled).map((g, i) => (
                   <div className={ 'sim-graph' }>
                     <SimulationGraph
                       title={ g.title }
+                      legend={ i === 0 }
                       configs={ this.state.simConfigs }
                       x={ this.state.simulationResults.time }
                       y={ this.state.simulationResults[g.key] }
