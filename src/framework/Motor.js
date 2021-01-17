@@ -31,6 +31,14 @@ class Motor {
   kt() {
     return (this.stall_current / this.stall_torque);
   }
+
+  calculate(voltage, speed) {
+    let current = (voltage - this.kw() * speed) / this.R();
+    return {
+      current: current,
+      torque: current / this.kt()
+    };
+  }
 };
 
 let rpm_to_rad = (2 * Math.PI) / 60.0;

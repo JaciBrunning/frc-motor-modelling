@@ -15,17 +15,6 @@ class LoadConfig extends React.PureComponent {
       />
       <UnitInput
         className='mt-2'
-        label='Load Angle (from horizon)'
-        type='number'
-        min={0} max={360} step={1}
-        value={ this.props.load.angle }
-        onChange={ v => this.props.update({ angle: v }) }
-        unit={Units.deg}
-        tooltip='Load angle from the horizon, to calculate effective weight of the load.
-        For example, a drivebase will have 0 load angle (horizontal), while an elevator will be 90 (vertical).'
-      />
-      <UnitInput
-        className='mt-2'
         label='Wheel / Pulley Diameter'
         type='number'
         min={0}
