@@ -19,7 +19,7 @@ class Simulation {
   }
 
   step(dt, voltage) {
-    let is_first = this.results.voltage.length == 0;
+    let is_first = this.results.voltage.length === 0;
     var last = (a) => is_first ? 0 : a[a.length - 1];
 
     let { current, torque } = this.motor.calculate(voltage, last(this.results.speed));

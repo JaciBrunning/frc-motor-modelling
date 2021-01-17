@@ -1,4 +1,6 @@
 class Unit {
+  static map = {};
+
   constructor(name, factor_to_base=1, base=null) {
     this.name = name;
     this.factor_to_base = factor_to_base;
@@ -17,6 +19,7 @@ class Unit {
       }
       this.base.derivatives.push(this);
     }
+    Unit.map[name] = this;
   }
 
   toBase(n) {
@@ -35,6 +38,12 @@ class Unit {
 
   allVariants() {
     return [ this.base, ...this.base.derivatives ]
+  }
+
+  static fromObject(unit_obj) {
+    if (typeof unit_obj === 'object' && unit_obj !== null)
+      return Unit.map[unit_obj.name];
+    return unit_obj;
   }
 };
 
@@ -56,6 +65,12 @@ export class Measurement {
 
   with(f) {
     return new Measurement(this.unit, f(this.value));
+  }
+
+  static fromObject(measurement_obj) {
+    if (typeof measurement_obj === 'object' && measurement_obj !== null)
+      return new Measurement(Unit.fromObject(measurement_obj.unit), measurement_obj.value);
+    return measurement_obj;
   }
 };
 

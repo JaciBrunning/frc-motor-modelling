@@ -23,4 +23,8 @@ class SimulationRunner {
 
 }
 
+export const simulationRunnerFrom = (...a) => {
+  return new SimulationRunner(...a);
+}
+
 export default SimulationRunner;

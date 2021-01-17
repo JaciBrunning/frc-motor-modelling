@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.6.0",
     "bootstrap": "^4.5.3",
     "chart.js": "^2.9.4",
+    "comlink-loader": "^2.0.0",
     "lodash": "^4.17.20",
     "mathjax-react": "^1.0.6",
     "node-sass": "4.14.1",

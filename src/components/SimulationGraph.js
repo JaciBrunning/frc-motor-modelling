@@ -9,13 +9,28 @@ class SimulationGraph extends React.Component {
 
   colours = [ '#34225c', '#71286b', '#aa2d6c', '#db425f', '#fc6749', '#ff9729', '#ffcb00', '#e6ff1c' ]
 
+  filter(arr, n_max) {
+    if (arr.length < n_max)
+      return arr;
+    
+    let stride = Math.floor(arr.length / n_max);
+    let out = [];
+    let i;
+    for (i = 0; i < arr.length; i += stride) {
+      out.push(arr[i]);
+    }
+
+    return out;
+  }
+
   data() {
+    const n = 1000;
     return {
-      labels: this.props.x,
+      labels: this.filter(this.props.x, n),
       datasets: Object.keys(this.props.y).map(id => {
         return {
           label: this.props.configs[id].name,
-          data: this.props.y[id],
+          data: this.filter(this.props.y[id], n),
           fill: false,
           pointRadius: 0,
           borderColor: this.colours[this.props.configs[id].num % this.colours.length]

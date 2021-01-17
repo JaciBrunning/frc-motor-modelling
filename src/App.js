@@ -9,6 +9,8 @@ import SimControl from './components/SimControl';
 import { motorFromConfig } from './framework/Motor';
 import SimulationRunner from './framework/SimulationRunner';
 import SimulationGraph from './components/SimulationGraph';
+/* eslint-disable import/no-webpack-loader-syntax */
+import SimulationWorker from 'comlink-loader!./framework/SimulationAdapter';
 
 class App extends React.Component {
   constructor(props) {
@@ -20,7 +22,8 @@ class App extends React.Component {
         time: Units.s.make(5),
         dt: Units.ms.make(10)
       },
-      simulationResults: null
+      simulationResults: null,
+      simLoading: false
     };
     this.addConfig = this.addConfig.bind(this);
     this.deleteConfig = this.deleteConfig.bind(this);
@@ -52,7 +55,7 @@ class App extends React.Component {
           },
           load: {
             mass: Units.kg.make(70),
-            radius: Units.inch.make(6 / 2) // mm
+            radius: Units.inch.make(6 / 2)
           }
         }
       },
@@ -104,33 +107,11 @@ class App extends React.Component {
   }
 
   runSimulation() {
-    let times = _.range(0, this.state.sim_config.time.toBase(), this.state.sim_config.dt.toBase());
-    let results = {
-      configs: {},
-      time: times,
-      voltage: {},
-      speed: {},
-      current: {},
-      torque: {},
-      velocity: {},
-      acceleration: {},
-      displacement: {}
-    };
-
-    Object.values(this.state.configs).forEach(cfg => {
-      let motor = motorFromConfig(cfg.motor);
-      let load  = { mass: cfg.load.mass.toBase(), radius: cfg.load.radius.toBase() };
-      let voltages = times.map(t => cfg.motor.voltage.toBase())
-      results.voltage[cfg.id] = voltages;
-      results.configs[cfg.id] = { name: cfg.name, num: cfg.num };
-
-      let runner = new SimulationRunner(times, voltages, motor, load);
-      let result = runner.run();
-      Object.keys(result).forEach(k => {
-        results[k][cfg.id] = result[k];
-      });
-    });
-    this.setState({ simulationResults: results });
+    this.setState({ simLoading: true });
+    const worker = new SimulationWorker();
+    (new worker.SimulationAdapter(this.state.sim_config, this.state.configs))
+      .then(a => a.run())
+      .then(results => this.setState({ simulationResults: results, simConfigs: this.state.configs, simLoading: false }));
   }
 
   render() {
@@ -143,7 +124,9 @@ class App extends React.Component {
         <Row className='mb-5'>
           <Col>
             <center>
-              <SimControl onRun={ this.runSimulation }/>
+              <SimControl
+                loading={ this.state.simLoading }
+                onRun={ this.runSimulation }/>
             </center>
           </Col>
         </Row>
@@ -164,25 +147,25 @@ class App extends React.Component {
                 <SimulationGraph
                   title="Displacement"
                   legend
-                  configs={ this.state.simulationResults.configs }
+                  configs={ this.state.simConfigs }
                   x={ this.state.simulationResults.time }           xLabel="Time (s)"
                   y={ this.state.simulationResults.displacement }   yLabel="Displacement (m)"
                 />
                 <SimulationGraph
                   title="Velocity"
-                  configs={ this.state.simulationResults.configs }
+                  configs={ this.state.simConfigs }
                   x={ this.state.simulationResults.time }           xLabel="Time (s)"
                   y={ this.state.simulationResults.velocity }       yLabel="Velocity (m/s)"
                 />
                 <SimulationGraph
                   title="Acceleration"
-                  configs={ this.state.simulationResults.configs }
+                  configs={ this.state.simConfigs }
                   x={ this.state.simulationResults.time }           xLabel="Time (s)"
                   y={ this.state.simulationResults.acceleration }   yLabel="Acceleration (m/s^2)"
                 />
                 <SimulationGraph
                   title="Current"
-                  configs={ this.state.simulationResults.configs }
+                  configs={ this.state.simConfigs }
                   x={ this.state.simulationResults.time }           xLabel="Time (s)"
                   y={ this.state.simulationResults.current }        yLabel="Motor Current (A)"
                 />

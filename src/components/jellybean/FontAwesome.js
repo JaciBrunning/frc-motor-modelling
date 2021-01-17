@@ -2,8 +2,7 @@ import React from 'react';
 
 class FAIcon extends React.PureComponent {
   static defaultProps = {
-    icon_style: 'solid',
-    size: null
+    icon_style: 'solid'
   };
 
   static styles = {
@@ -18,11 +17,12 @@ class FAIcon extends React.PureComponent {
       this.props.className
     ];
     if (this.props.size) cls.push(`fa-${this.props.size}`);
+    if (this.props.spin) cls.push(`fa-spin`);
     return cls.join(" ")
   }
 
   render() {
-    return <i className={this.getClassName()} > &nbsp; </i>
+    return <React.Fragment><i className={this.getClassName()} ></i> &nbsp; </React.Fragment>
   }
 }
 
