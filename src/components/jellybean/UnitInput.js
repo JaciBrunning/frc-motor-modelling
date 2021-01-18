@@ -10,6 +10,7 @@ class UnitInput extends React.PureComponent {
     sm_input: 3,
     sm_unit: 4,
     unit: undefined,
+    unitContent: undefined,
     parse: parseFloat,
     round: 3
   };
@@ -39,7 +40,7 @@ class UnitInput extends React.PureComponent {
   }
 
   render() {
-    var { className, sm_lab, label, sm_input, sm_unit, sm_tooltip, tooltip, unit, parse, value, onChange, ...controlProps } = this.props;
+    var { className, sm_lab, label, sm_input, sm_unit, sm_tooltip, tooltip, unit, unitContent, parse, value, onChange, ...controlProps } = this.props;
     return <Form.Row className={className}>
       {
         label ? 
@@ -51,21 +52,24 @@ class UnitInput extends React.PureComponent {
         <Form.Control size="sm" value={ this.getValue() } onChange={ this.changeValue } {...controlProps} />
       </Col>
       <Col sm={sm_unit}>
-        <Row>
-          <Col>
-            {
-              unit ? 
-                <UnitSelector unit={ unit } value={ value.unit } onChange={ u => onChange(value.to(u)) } />
-                : <React.Fragment />
-            }
-          </Col>
-          <Col className='pl-0' xs='3'>
-            {
-              tooltip ? 
-                <HelpIcon tooltip={ tooltip } /> : <React.Fragment />
-            }
-          </Col>
-        </Row>
+        {
+          unitContent ? unitContent : 
+            <Row>
+              <Col>
+                {
+                  unit ? 
+                    <UnitSelector unit={ unit } value={ value.unit } onChange={ u => onChange(value.to(u)) } />
+                    : <React.Fragment />
+                }
+              </Col>
+              <Col className='pl-0' xs='3'>
+                {
+                  tooltip ? 
+                    <HelpIcon tooltip={ tooltip } /> : <React.Fragment />
+                }
+              </Col>
+            </Row>
+        }
       </Col>
     </Form.Row>
   }

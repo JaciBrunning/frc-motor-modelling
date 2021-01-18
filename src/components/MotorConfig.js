@@ -4,10 +4,15 @@ import { ButtonGroup, Button, Form, Col } from 'react-bootstrap';
 import { MathComponent } from 'mathjax-react';
 import UnitInput, { Units } from './jellybean/UnitInput';
 import HelpIcon from './jellybean/HelpIcon';
+import FAIcon from './jellybean/FontAwesome';
+import GearboxConfigModal from './GearboxConfig';
 
 class MotorConfig extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      showGearboxConfig: false
+    }
     this.getMotor = this.getMotor.bind(this);
   }
 
@@ -67,8 +72,21 @@ class MotorConfig extends React.Component {
         value={ this.props.motor.reduction }
         onChange={ v => { this.props.update({ reduction: v }) } }
         min={0}
-        step={0.1} />
+        step={0.1}
+        disabled={ this.props.motor.gearbox !== null }
+        unitContent={ 
+          <Button variant='info' size='sm' onClick={ () => this.setState({ showGearboxConfig: true }) }>
+             <FAIcon icon='cog' nospace/> 
+          </Button> 
+        } />
       
+      <GearboxConfigModal
+        show={this.state.showGearboxConfig}
+        onClose={ () => this.setState({ showGearboxConfig: false }) }
+        onSave={ (s) => { s ? this.props.update(s) : null } }
+        reduction={ this.props.motor.reduction }
+        gearbox={ this.props.motor.gearbox } />
+
       <hr />
       <div className="text-dark small">
         <center><i> Equivalent Motor Coefficients </i> <HelpIcon tooltip="Mathematical coefficients for a single motor model, after merging multiple motors and applying the gearbox reduction." /> </center>

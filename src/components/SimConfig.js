@@ -14,7 +14,6 @@ class SimConfig extends React.Component {
     let idx = _.findIndex(this.props.cfg.graphs, g => g.key == key);
     let new_graphs = [...this.props.cfg.graphs];
     new_graphs[idx] = { ...this.props.cfg.graphs[idx], ...changes };
-    console.log(key, changes, idx, new_graphs)
     this.props.update({ graphs: new_graphs });
   }
 
