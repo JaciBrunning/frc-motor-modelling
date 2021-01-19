@@ -50,14 +50,15 @@ class Motor {
 let rpm_to_rad = (2 * Math.PI) / 60.0;
 
 export const Motors = {
-  Falcon500:  new Motor("Falcon 500", 12,  6380 * rpm_to_rad, 1.5, 4.69, 257),
-  NEO:        new Motor("NEO",        12,  5880 * rpm_to_rad, 1.3, 3.36, 166),
-  NEO550:     new Motor("NEO 550",    12, 11710 * rpm_to_rad, 1.1, 1.08, 111),
-  CIM:        new Motor("CIM",        12,  5330 * rpm_to_rad, 2.7, 2.41, 131),
-  MiniCIM:    new Motor("Mini CIM",   12,  5840 * rpm_to_rad, 3.0, 1.41,  89),
-  BAG:        new Motor("BAG",        12, 13180 * rpm_to_rad, 1.8, 0.43,  53),
-  pro775:     new Motor("775pro",     12, 14270 * rpm_to_rad, 3.7, 0.36, 71),
-  redline:    new Motor("AM Redline", 12, 19500 * rpm_to_rad, 2.6, 0.64, 122)
+  Falcon500:  new Motor("Falcon 500",  12,  6380 * rpm_to_rad,  1.5, 4.69, 257),
+  NEO:        new Motor("NEO",         12,  5880 * rpm_to_rad,  1.3, 3.36, 166),
+  NEO550:     new Motor("NEO 550",     12, 11710 * rpm_to_rad,  1.1, 1.08, 111),
+  CIM:        new Motor("CIM",         12,  5330 * rpm_to_rad,  2.7, 2.41, 131),
+  MiniCIM:    new Motor("Mini CIM",    12,  5840 * rpm_to_rad,  3.0, 1.41,  89),
+  BAG:        new Motor("BAG",         12, 13180 * rpm_to_rad,  1.8, 0.43,  53),
+  pro775:     new Motor("775pro",      12, 14270 * rpm_to_rad,  3.7, 0.36,  71),
+  redline:    new Motor("AM Redline",  12, 19500 * rpm_to_rad,  2.6, 0.64, 122),
+  neverest:   new Motor("AM NeveRest", 12,  5480 * rpm_to_rad, 0.35, 0.17, 9.8)
 };
 
 export function motorFromConfig(cfg) {
