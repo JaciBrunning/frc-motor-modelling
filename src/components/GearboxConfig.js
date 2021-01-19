@@ -44,7 +44,7 @@ class GearboxConfig extends React.Component {
 
   toggleCalc = () => {
     this.setState({
-      gearbox: (this.state.gearbox === null) ? [[16,32], [16,50]] : null
+      gearbox: (this.state.gearbox === null) ? [[14,50], [16,48]] : null
     }, this.updateReduction);
   }
 
@@ -93,7 +93,7 @@ class GearboxConfig extends React.Component {
           <React.Fragment>
             {this.state.gearbox.map((stage, i) => <Form.Row key={i} className='my-3'>
               <Col>
-                <h6>
+                <h6 className='align-self-center'>
                   Stage {i + 1}
                   &nbsp; &nbsp;
                   {

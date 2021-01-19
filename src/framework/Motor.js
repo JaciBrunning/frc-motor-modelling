@@ -20,6 +20,12 @@ class Motor {
                 this.stall_torque * G, this.stall_current);
   }
 
+  withEfficiency(eff) {
+    return new Motor(this.name + " (Eff=" + eff + ")",
+                this.voltage_nom, this.free_speed, this.free_current,
+                this.stall_torque * eff, this.stall_current);
+  }
+
   R() {
     return this.voltage_nom / this.stall_current;
   }
@@ -55,7 +61,7 @@ export const Motors = {
 };
 
 export function motorFromConfig(cfg) {
-  return Motors[cfg.key].mult(cfg.num).reduce(cfg.reduction);
+  return Motors[cfg.key].mult(cfg.num).reduce(cfg.reduction).withEfficiency(cfg.efficiency / 100.0);
 };
 
 export default Motor;

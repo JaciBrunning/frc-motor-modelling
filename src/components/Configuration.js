@@ -53,11 +53,7 @@ class Configuration extends React.Component {
           update={ r => this.updateAndMerge('load', r) } />
       </SimpleAccordion>
       <br />
-      <SimpleAccordion title={
-        "Motor (" +
-          this.props.cfg.motor.num + "x " +
-          Motors[this.props.cfg.motor.key].name + 
-          " < " + this.props.cfg.motor.reduction + ")"}>
+      <SimpleAccordion title={"Motors"}>
         <MotorConfig
           motor={ this.props.cfg.motor }
           update={ m => this.updateAndMerge('motor', m) } />

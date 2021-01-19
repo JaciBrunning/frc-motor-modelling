@@ -79,6 +79,16 @@ class MotorConfig extends React.Component {
              <FAIcon icon='cog' nospace/> 
           </Button> 
         } />
+
+      <UnitInput
+        label='Efficiency'
+        className='mb-2'
+        type='number'
+        value={ this.props.motor.efficiency }
+        onChange={ v => { this.props.update({ efficiency: v }) } }
+        min={0}
+        max={100}
+        step={0.5} />
       
       <GearboxConfigModal
         show={this.state.showGearboxConfig}

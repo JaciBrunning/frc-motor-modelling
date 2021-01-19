@@ -7,7 +7,8 @@ export const KitOfParts = () => {
       voltage: Units.V.make(12),
       num: 4,
       reduction: 10.75,
-      gearbox: null
+      gearbox: null,
+      efficiency: 90,
     },
     load: {
       accel: Units.mpsps.make(0),
@@ -24,7 +25,8 @@ export const Elevator = () => {
       voltage: Units.V.make(12),
       num: 2,
       reduction: 20,
-      gearbox: null
+      gearbox: null,
+      efficiency: 90
     },
     load: {
       accel: Units.mpsps.make(-9.81),
