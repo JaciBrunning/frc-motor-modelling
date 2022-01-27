@@ -6,8 +6,7 @@ export const KitOfParts = () => {
       key: 'CIM',
       voltage: Units.V.make(12),
       num: 4,
-      reduction: 10.75,
-      gearbox: null,
+      gearbox: [[14, 50], [16, 48]],
       efficiency: 90,
     },
     load: {
@@ -24,8 +23,7 @@ export const Elevator = () => {
       key: 'pro775',
       voltage: Units.V.make(12),
       num: 2,
-      reduction: 20,
-      gearbox: null,
+      gearbox: 20,
       efficiency: 90
     },
     load: {

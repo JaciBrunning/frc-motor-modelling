@@ -1,5 +1,12 @@
 class Motor {
-  constructor(name, v_nom, free_speed, free_current, stall_torque, stall_current) {
+  name: string
+  voltage_nom: number
+  free_speed: number
+  free_current: number
+  stall_torque: number
+  stall_current: number
+
+  constructor(name: string, v_nom: number, free_speed: number, free_current: number, stall_torque: number, stall_current: number) {
     this.name = name;
     this.voltage_nom = v_nom;
     this.free_speed = free_speed;
@@ -8,19 +15,19 @@ class Motor {
     this.stall_current = stall_current;
   }
 
-  mult(n) {
+  mult(n: number) {
     return new Motor(this.name + " (x" + n + ")", 
                 this.voltage_nom, this.free_speed, n * this.free_current, 
                 n * this.stall_torque, n * this.stall_current);
   }
 
-  reduce(G) {
+  reduce(G: number) {
     return new Motor(this.name + " (G=" + G + ")",
                 this.voltage_nom, this.free_speed / G, this.free_current,
                 this.stall_torque * G, this.stall_current);
   }
 
-  withEfficiency(eff) {
+  withEfficiency(eff: number) {
     return new Motor(this.name + " (Eff=" + eff + ")",
                 this.voltage_nom, this.free_speed, this.free_current,
                 this.stall_torque * eff, this.stall_current);
@@ -38,7 +45,7 @@ class Motor {
     return (this.stall_current / this.stall_torque);
   }
 
-  calculate(voltage, speed) {
+  calculate(voltage: number, speed: number) {
     let current = (voltage - this.kw() * speed) / this.R();
     return {
       current: current,
@@ -61,8 +68,32 @@ export const Motors = {
   neverest:   new Motor("AM NeveRest", 12,  5480 * rpm_to_rad, 0.35, 0.17, 9.8)
 };
 
-export function motorFromConfig(cfg) {
-  return Motors[cfg.key].mult(cfg.num).reduce(cfg.reduction).withEfficiency(cfg.efficiency / 100.0);
+export type MotorKey = keyof typeof Motors;    // Yeck
+
+export type GearboxStageConfig = [number, number];
+export type GearboxConfig = number | GearboxStageConfig[];
+
+export function calcPartialReduction(stage: GearboxStageConfig) {
+  return stage[stage.length - 1] / stage[0];
+}
+
+export function calcReduction(gearbox: GearboxConfig): number {
+  if (typeof gearbox === "number")
+    return gearbox;
+  else
+    return gearbox.map(calcPartialReduction).reduce((a, b) => a * b);
+}
+
+export interface MotorConfig {
+  key: MotorKey,
+  voltage: number,
+  num: number,
+  efficiency: number,
+  gearbox: GearboxConfig
+}
+
+export function motorFromConfig(cfg: MotorConfig) {
+  return Motors[cfg.key].mult(cfg.num).reduce(calcReduction(cfg.gearbox)).withEfficiency(cfg.efficiency / 100.0);
 };
 
 export default Motor;

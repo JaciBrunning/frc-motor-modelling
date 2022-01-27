@@ -1,22 +1,29 @@
 import React from 'react';
-import { Motors, motorFromConfig } from '../framework/Motor';
+import Motor, { Motors, motorFromConfig, MotorKey, calcReduction } from '../framework/Motor';
+import type {MotorConfig} from '../framework/Motor';
 import { ButtonGroup, Button, Form, Col } from 'react-bootstrap';
 import { MathComponent } from 'mathjax-react';
 import UnitInput, { Units } from './jellybean/UnitInput';
 import HelpIcon from './jellybean/HelpIcon';
 import FAIcon from './jellybean/FontAwesome';
 import GearboxConfigModal from './GearboxConfig';
+import { Spec } from 'immutability-helper';
 
-class MotorConfig extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showGearboxConfig: false
-    }
-    this.getMotor = this.getMotor.bind(this);
-  }
+type MotorConfigProps = {
+  motor: MotorConfig;
+  update: (s: Spec<MotorConfig>) => never;
+};
 
-  getMotor() {
+type MotorConfigState = {
+  showGearboxConfig: boolean;
+};
+
+class MotorConfigComponent extends React.Component<MotorConfigProps, MotorConfigState> {
+  state = {
+    showGearboxConfig: false
+  };
+
+  getMotor = () => {
     return motorFromConfig(this.props.motor);
   }
 
@@ -33,8 +40,8 @@ class MotorConfig extends React.Component {
                   size="sm"
                   value={key} 
                   name="motor_selection"
-                  onClick={ (e) => this.props.update({ key: e.currentTarget.value }) }> 
-                  { Motors[key].name } 
+                  onClick={ (e) => this.props.update({ key: { $set: ((e.currentTarget as HTMLButtonElement).value as MotorKey) } })}>
+                  { Motors[key as MotorKey].name } 
                 </Button>
               )
             }
@@ -48,7 +55,7 @@ class MotorConfig extends React.Component {
         className="mb-2"
         type="number"
         value={ this.props.motor.voltage }
-        onChange={ v => { this.props.update({ voltage: v }) } }
+        onChange={ (v: number) => { this.props.update({ voltage: { $set: v } }) } }
         min={0}
         max={14}
         step={0.1}
@@ -60,7 +67,7 @@ class MotorConfig extends React.Component {
         className="mb-2"
         type="number"
         value={ this.props.motor.num }
-        onChange={ v => { this.props.update({ num: v }) } }
+        onChange={ (v: number) => { this.props.update({ num: { $set: v } }) } }
         min={1}
         step={1}
         parse={parseInt} />
@@ -69,11 +76,11 @@ class MotorConfig extends React.Component {
         label="Gearbox Reduction"
         className="mb-2"
         type="number"
-        value={ this.props.motor.reduction }
-        onChange={ v => { this.props.update({ reduction: v }) } }
+        value={ calcReduction(this.props.motor.gearbox) }
+        onChange={ (v: number) => { this.props.update({ gearbox: { $set: v } }) } }
         min={0}
         step={0.1}
-        disabled={ this.props.motor.gearbox !== null }
+        disabled={ (typeof this.props.motor.gearbox) !== "number" }
         unitContent={ 
           <Button variant='info' size='sm' onClick={ () => this.setState({ showGearboxConfig: true }) }>
              <FAIcon icon='cog' nospace/> 
@@ -85,7 +92,7 @@ class MotorConfig extends React.Component {
         className='mb-2'
         type='number'
         value={ this.props.motor.efficiency }
-        onChange={ v => { this.props.update({ efficiency: v }) } }
+        onChange={ (v: number) => { this.props.update({ efficiency: { $set: v } }) } }
         min={0}
         max={100}
         step={0.5} />
@@ -93,13 +100,12 @@ class MotorConfig extends React.Component {
       <GearboxConfigModal
         show={this.state.showGearboxConfig}
         onClose={ () => this.setState({ showGearboxConfig: false }) }
-        onSave={ (s) => { s ? this.props.update(s) : null } }
-        reduction={ this.props.motor.reduction }
+        onChange={(gb) => this.props.update({ gearbox: { $set: gb } })}
         gearbox={ this.props.motor.gearbox } />
 
       <hr />
       <div className="text-dark small">
-        <center><i> Equivalent Motor Coefficients </i> <HelpIcon tooltip="Mathematical coefficients for a single motor model, after merging multiple motors and applying the gearbox reduction." /> </center>
+        <div className="text-center"><i> Equivalent Motor Coefficients </i> <HelpIcon tooltip="Mathematical coefficients for a single motor model, after merging multiple motors and applying the gearbox reduction." /> </div>
         <Form.Row>
           <Col>
             <MathComponent tex={ "V = IR + k_\\omega \\omega" } />
@@ -124,4 +130,4 @@ class MotorConfig extends React.Component {
   }
 }
 
-export default MotorConfig;
+export default MotorConfigComponent;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Col, Button } from 'react-bootstrap';
 import SimpleAccordion from './jellybean/SimpleAccordion';
-import MotorConfig from './MotorConfig';
+import MotorConfigComponent from './MotorConfig';
 import { Motors } from '../framework/Motor';
 import FAIcon from './jellybean/FontAwesome';
 import LoadConfig from './LoadConfig';
@@ -54,7 +54,7 @@ class Configuration extends React.Component {
       </SimpleAccordion>
       <br />
       <SimpleAccordion title={"Motors"}>
-        <MotorConfig
+        <MotorConfigComponent
           motor={ this.props.cfg.motor }
           update={ m => this.updateAndMerge('motor', m) } />
       </SimpleAccordion>

@@ -1,10 +1,14 @@
 class Unit {
-  static map = {};
+  static map: { [key: string]: Unit } = {};
 
-  constructor(name, factor_to_base=1, base=null) {
+  name: string
+  factor_to_base: number
+  base: Unit
+  derivatives: Unit[] | undefined
+
+  constructor(name: string, factor_to_base=1, base: Unit | null = null) {
     this.name = name;
     this.factor_to_base = factor_to_base;
-    this.base = base;
 
     if (!base && (factor_to_base - 1) > 0.001)
       throw(`ERROR: Unit ${name} has no base unit!`)
@@ -13,34 +17,40 @@ class Unit {
       this.derivatives = []
       this.base = this;
     } else {
+      this.base = base;
+
       while (this.base.base !== this.base) {
         this.factor_to_base *= this.base.factor_to_base;
         this.base = this.base.base;
       }
-      this.base.derivatives.push(this);
+      this.base.derivatives!.push(this);
     }
     Unit.map[name] = this;
   }
 
-  toBase(n) {
+  toBase(n: number) {
     return n * this.factor_to_base;
   }
 
-  fromBase(n) {
+  fromBase(n: number) {
     return n / this.factor_to_base;
   }
 
-  to(unit, n) {
+  to(unit: Unit, n: number) {
     if (unit.base !== this.base)
       throw "Cannot convert between units of different bases!"
     return unit.fromBase(this.toBase(n));
   }
 
   allVariants() {
-    return [ this.base, ...this.base.derivatives ]
+    return [ this.base, ...this.base.derivatives! ]
   }
 
-  static fromObject(unit_obj) {
+  make(n: number): Measurement {
+    return new Measurement(this, n);
+  }
+
+  static fromObject(unit_obj: any) {
     if (typeof unit_obj === 'object' && unit_obj !== null)
       return Unit.map[unit_obj.name];
     return unit_obj;
@@ -48,14 +58,17 @@ class Unit {
 };
 
 export class Measurement {
-  constructor(unit, value) {
+  unit: Unit
+  value: number
+
+  constructor(unit: Unit, value: number) {
     this.unit = unit;
     this.value = value;
     if (this.unit === undefined || this.value === undefined)
       throw "Measurement params undefined";
   }
 
-  to(unit) {
+  to(unit: Unit) {
     return new Measurement(unit, this.unit.to(unit, this.value));
   }
 
@@ -63,19 +76,15 @@ export class Measurement {
     return this.unit.toBase(this.value);
   }
 
-  with(f) {
+  with(f: (v: number) => number) {
     return new Measurement(this.unit, f(this.value));
   }
 
-  static fromObject(measurement_obj) {
+  static fromObject(measurement_obj: any) {
     if (typeof measurement_obj === 'object' && measurement_obj !== null)
       return new Measurement(Unit.fromObject(measurement_obj.unit), measurement_obj.value);
     return measurement_obj;
   }
-};
-
-Unit.prototype.make = function(n) {
-  return new Measurement(this, n);
 };
 
 // Length

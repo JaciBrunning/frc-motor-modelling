@@ -1,73 +1,69 @@
 import React from 'react';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { v4 as uuid } from 'uuid';
+import { calcPartialReduction, calcReduction, GearboxConfig, GearboxStageConfig } from '../framework/Motor';
 import FAIcon from './jellybean/FontAwesome';
+import update from 'immutability-helper';
 
-class GearboxConfig extends React.Component {
+type GearboxConfigProps = {
+  round: number,
+  gearbox: GearboxConfig,
+  onChange: (gearbox: GearboxConfig) => void
+};
+
+class GearboxConfigComponent extends React.Component<GearboxConfigProps> {
   static defaultProps = {
     round: 3
   };
-  constructor(props) {
+
+  uuid: string;
+
+  constructor(props: GearboxConfigProps) {
     super(props);
-    this.state = {
-      reduction: props.reduction,
-      gearbox: props.gearbox
-    };
     this.uuid = uuid();
   }
 
-  updateParent = () => {
-    if (this.props.onChange)
-      this.props.onChange(this.state);
-  }
-
-  round = (v) => {
+  round = (v: number) => {
     return parseFloat(v.toFixed(this.props.round));
   }
 
-  partialReduction = (stage) => {
-    return stage[stage.length - 1] / stage[0];
-  }
-
-  updateReduction = () => {
-    if (this.state.gearbox) {
-      let reduction = this.state.gearbox.map(this.partialReduction).reduce((a, b) => a * b);
-      this.setState({ reduction: reduction }, this.updateParent);
-    } else {
-      this.updateParent();
-    }
-  }
-
-  setReduction = (reduction) => {
-    this.setState({ reduction: reduction }, this.updateParent);
-  }
-
   toggleCalc = () => {
-    this.setState({
-      gearbox: (this.state.gearbox === null) ? [[14,50], [16,48]] : null
-    }, this.updateReduction);
+    this.props.onChange(
+      (typeof this.props.gearbox === "number") ? 
+        [[14, 50], [16, 48]] : 
+        calcReduction(this.props.gearbox)
+    );
   }
 
   addStage = () => {
-    this.setState({
-      gearbox: [ ...this.state.gearbox, [16, 50] ]
-    }, this.updateReduction);
+    if (typeof this.props.gearbox !== "number") {
+      this.props.onChange(
+        [ ...this.props.gearbox, [16, 50] ]
+      )
+    }
   }
 
-  removeStage = (i) => {
-    this.setState({
-      gearbox: [ ...this.state.gearbox.filter( (x, j) => j !== i ) ]
-    }, this.updateReduction);
+  removeStage = (i: number) => {
+    if (typeof this.props.gearbox !== "number") {
+      this.props.onChange(
+        this.props.gearbox.filter( (x, j) => j !== i )
+      );
+    }
   }
 
-  updateStage = (stage, idx, value) => {
-    let new_stages = [ ...this.state.gearbox ];
-    new_stages[stage][idx] = value;
-    this.setState({ gearbox: new_stages }, this.updateReduction);
+  updateStage = (stage: number, idx: number, value: number) => {
+    if (typeof this.props.gearbox !== "number") {
+      this.props.onChange(
+        update(this.props.gearbox, { [stage]: { [idx]: { $set: value } } })
+      )
+    }
   }
 
   render() {
-    let simple = this.state.gearbox === null;
+    let { gearbox, onChange } = this.props;
+    let simple = typeof gearbox === "number";
+
+
     return <Form className='gearbox-config'>
       <Form.Row>
         <Col>
@@ -83,15 +79,15 @@ class GearboxConfig extends React.Component {
             type='number' 
             step={0.01}
             disabled={ !simple }
-            value={ this.round(this.state.reduction) }
-            onChange={ e => this.setReduction(parseFloat(e.target.value)) } />
+            value={ this.round(calcReduction(gearbox)) }
+            onChange={ e => onChange(parseFloat(e.target.value)) } />
         </Col>
       </Form.Row>
       <hr />
       {
         simple ? <React.Fragment /> :
           <React.Fragment>
-            {this.state.gearbox.map((stage, i) => <Form.Row key={i} className='my-3'>
+            {(gearbox as GearboxStageConfig[]).map((stage, i) => <Form.Row key={i} className='my-3'>
               <Col>
                 <h6 className='align-self-center'>
                   Stage {i + 1}
@@ -108,7 +104,7 @@ class GearboxConfig extends React.Component {
                   <Col>
                     <Form.Control
                       key={`${i}-${j}`}
-                      size='md' type='number'
+                      type='number'
                       min={1} step={1}
                       value={ v }
                       onChange={ e => this.updateStage(i, j, parseInt(e.target.value)) } />
@@ -117,9 +113,9 @@ class GearboxConfig extends React.Component {
               }
               <Col>
                 <Form.Control
-                  size='md' type='number'
+                  type='number'
                   disabled
-                  value={ this.round(this.partialReduction(stage)) } />
+                  value={ this.round(calcPartialReduction(stage)) } />
               </Col>
             </Form.Row>)}
             <Form.Row>
@@ -134,19 +130,37 @@ class GearboxConfig extends React.Component {
   }
 };
 
-class GearboxConfigModal extends React.Component {
+interface GearboxConfigModalProps extends GearboxConfigProps {
+  show: boolean;
+  onClose: () => void,
+}
+
+type GearboxConfigModalState = {
+  gearbox: GearboxConfig
+}
+
+class GearboxConfigModal extends React.Component<GearboxConfigModalProps, GearboxConfigModalState> {
+  static defaultProps = {
+    round: 3
+  };
+
+  constructor(props: GearboxConfigModalProps) {
+    super(props);
+    this.state = { gearbox: props.gearbox };
+  }
+
   render() {
-    var { show, onClose, onSave, ...props } = this.props;
+    var { show, onClose, onChange, ...props } = this.props;
     return <Modal show={show} onHide={ onClose }>
       <Modal.Header closeButton>
         <Modal.Title> Configure Gearbox </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <GearboxConfig {...props } onChange={ s => this.setState({ ...s }) } />
+        <GearboxConfigComponent {...props } gearbox={ this.state.gearbox } onChange={ s => this.setState({ gearbox: s }) } />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={ onClose }> Cancel </Button>
-        <Button variant="success" onClick={ () => { onClose(); onSave(this.state) } }> Save </Button>
+        <Button variant="success" onClick={ () => { onClose(); onChange(this.state.gearbox) } }> Save </Button>
       </Modal.Footer>
     </Modal>
   }
